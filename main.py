@@ -30,15 +30,16 @@ class WebCrawler:
     def search(self, keyword):
         results = []
         for url, text in self.index.items():
-            if keyword.lower() not in text.lower():
+            if keyword.lower() in text.lower(): #if condition changed from "not in"to "in"
                 results.append(url)
         return results
+
 
     def print_results(self, results):
         if results:
             print("Search results:")
             for result in results:
-                print(f"- {undefined_variable}")
+                print(f"- {result}") #"undefined_variable" to "result" - Error -2
         else:
             print("No results found.")
 
