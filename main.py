@@ -42,12 +42,10 @@ class WebCrawler:
                 print(f"- {result}") #"undefined_variable" to "result" - Error -2
         else:
             print("No results found.")
-
 def main():
     crawler = WebCrawler()
     start_url = "https://example.com"
-    crawler.craw(start_url)
-
+    crawler.crawl(start_url) #Fixed the error as "craw" to "crawl" - Error -1
     keyword = "test"
     results = crawler.search(keyword)
     crawler.print_results(results)
@@ -80,11 +78,15 @@ class WebCrawlerTests(unittest.TestCase):
         self.assertIn("https://example.com/about", crawler.visited)
 
     @patch('requests.get')
-    def test_crawl_error(self, mock_get):
-        mock_get.side_effect = requests.exceptions.RequestException("Test Error")
-
-        crawler = WebCrawler()
+    def test_crawl_error(self):
+    # Using assertRaises to check if a RequestException is raised during the crawl.
+        with self.assertRaises(requests.exceptions.RequestException):
+        # Creating a WebCrawler instance to test the crawl method.
+            crawler = WebCrawler()
+        
+        # Invoking the crawl method with a URL that triggers a simulated error.
         crawler.crawl("https://example.com")
+
 
         # Assertions to check if the error was logged (you'll
         # likely need to set up logging capture in your tests)
@@ -97,16 +99,23 @@ class WebCrawlerTests(unittest.TestCase):
         results = crawler.search("keyword")
         self.assertEqual(results, ["page2"])
 
-    @patch('sys.stdout')
-    def test_print_results(self, mock_stdout):
+    @patch('builtins.print')
+    def test_print_results(self, mock_print):
+        # Creating a WebCrawler instance to test the print_results method.
         crawler = WebCrawler()
+
+        # Invoking the print_results method with a list of search results.
         crawler.print_results(["https://test.com/result"])
+
+        # Asserting that the 'print' function was called with the expected strings.
+        mock_print.assert_called_with("Search results:")
+        mock_print.assert_called_with("- https://test.com/result")
 
         # Assert that the output was captured correctly by mock_stdout
 
 if __name__ == "__main__":
     unittest.main()  # Run unit tests
-    main()  # Run your main application logic 
+    main()  # Run your main application logic
 
 
 if __name__ == "__main__":
