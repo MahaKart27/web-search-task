@@ -3,10 +3,16 @@ from bs4 import BeautifulSoup
 from collections import defaultdict
 from urllib.parse import urljoin, urlparse
 import re
+import nltk
+from nltk.corpus import stopwords
+
+# Download NLTK stopwords
+nltk.download('stopwords')
 
 class Ranker:
     def __init__(self, index):
         self.index = index
+        self.stop_words = set(stopwords.words('english'))
 
     def search(self, query):
         query_tokens = self.tokenize_text(query)
@@ -26,9 +32,8 @@ class Ranker:
         return re.findall(r'\b\w+\b', text.lower())
 
     def remove_stop_words(self, tokens):
-        # Remove common stop words (this can be expanded)
-        stop_words = {'a', 'an', 'the', 'is', 'are', 'and', 'or', 'not'}
-        return [token for token in tokens if token not in stop_words]
+        # Remove common stop words using NLTK stopwords
+        return [token for token in tokens if token not in self.stop_words]
 
 
 def main():
