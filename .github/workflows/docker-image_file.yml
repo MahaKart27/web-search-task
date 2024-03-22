@@ -27,4 +27,4 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: 24d819fef2a3/web_search_app:latest
+          tags: 3414dbb0f1a58008ea6e627c55459a0da1173c967e22675094a90643ca49a0fd/web_search_app:latest
