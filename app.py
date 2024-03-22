@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from main_websearch import Indexer, Ranker, WebCrawler
 
-app = Flask(_name_)
+app = Flask(__name__)
 indexer = Indexer()
 ranker = Ranker(indexer.index)
 crawler = WebCrawler(indexer, ranker)
@@ -9,6 +9,7 @@ crawler = WebCrawler(indexer, ranker)
 @app.route('/')
 def index():
     return 'Welcome to the Web Search API!'
+
 @app.route('/index_page', methods=['POST'])
 def index_page():
     data = request.json
@@ -29,8 +30,6 @@ def crawl():
         return jsonify({"error": "Start URL is required"}), 400
     crawler.crawl(start_url)
     return jsonify({"message": "Crawling completed successfully!"})
-
-
 
 @app.route('/search', methods=['GET'])
 def search():
@@ -53,5 +52,5 @@ def rank():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-if _name_ == '_main_':
+if __name__ == '__main__':
+    app.run(debug=True)
