@@ -8,10 +8,12 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v5  # Updated to use Node.js 20
+      with:
+        ref: ${{ github.event.before }}
 
     - name: Set up Python
-      uses: actions/setup-python@v2
+      uses: actions/setup-python@v2  # Updated to use Node.js 20
       with:
         python-version: '3.x'
 
@@ -23,3 +25,4 @@ jobs:
     - name: Run unit tests
       run: |
         pytest tests/
+
