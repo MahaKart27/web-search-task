@@ -1,23 +1,56 @@
 name: Pylint
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  build:
+  lint_and_push:
+    name: Linting and Push
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install pylint
-    - name: Analysing the code with pylint
-      run: |
-        pylint $(git ls-files '*.py')
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Find linting script
+        run: echo "LINTING_SCRIPT=$(find . -name 'run_linting.bat' -type f | head -n 1)" >> $GITHUB_ENV
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install flake8
+        run: |
+          pip install flake8
+          pip install black
+
+      - name: Grant execute permission to linting script
+        run: chmod +x $LINTING_SCRIPT
+
+      - name: Run linting
+        run: |
+          if [ -f "$LINTING_SCRIPT" ]; then
+            ./$LINTING_SCRIPT
+            if [ $? -eq 0 ]; then
+              echo "Linting issues fixed successfully."
+            else
+              echo "Fixing linting issues unsuccessful."
+            fi
+          else
+            echo "Linting script not found."
+          fi
+
+      - name: Push code if linting passed
+        if: success()
+        run: |
+          git config --local user.email "mahavirkarthik27@msitprogram.net"
+          git config --local user.name "MahaKart27"
+          git add .
+          git commit -m "Linting issues fixed"
+          git push origin main</div>

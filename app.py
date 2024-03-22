@@ -25,7 +25,7 @@ def index_page():
 @app.route('/crawl', methods=['POST'])
 def crawl():
     data = request.json
-    start_url = data.get('start_url')
+    start_url =                        data.get('start_url')
     if not start_url:
         return jsonify({"error": "Start URL is required"}), 400
     crawler.crawl(start_url)
